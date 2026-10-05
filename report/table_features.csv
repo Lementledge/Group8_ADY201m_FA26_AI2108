@@ -1,0 +1,11 @@
+feature_name,feature_type,source_table,n_unique,missing_rate,role_in_rq
+ev_state,Categorical,events,14,0.0,RQ1 & RQ2
+wx,Categorical,events,3,0.0,RQ1 & RQ2
+light_cond,Categorical,events,4,0.0,RQ1 & RQ2
+far_part,Categorical,aircraft,5,0.0,RQ1 & RQ2
+type_fly,Categorical,aircraft,5,0.0,RQ1 & RQ2
+flt_phase,Categorical,aircraft,6,0.0,RQ1 & RQ2
+num_eng,Numerical,aircraft,5,0.0,RQ1 & RQ2
+n_aircraft,Numerical,aircraft,2,0.0,RQ1 & RQ2
+age_max,Numerical,crew,75,0.0,RQ1 & RQ2
+hours_max,Numerical,crew,10995,0.0,RQ1 & RQ2

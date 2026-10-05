@@ -1,0 +1,4 @@
+step,table,rows_before,rows_dropped,reason,rows_after
+1. Filter events,events,57910,0,Chỉ giữ các vụ tai nạn chính thức (ev_type=ACC) trong giai đoạn 1990-2024,57910
+2. Clean aircraft & flag UAS,aircraft,60809,0,"Liên kết với clean_events, loại bỏ bản ghi máy bay không thuộc tai nạn phân tích",60809
+3. Clean crew & conditional median impute,flight_crew,57910,0,"Lọc giá trị phi lý (age <16 or >90, hours >50k) và điền khuyết bằng median",57910

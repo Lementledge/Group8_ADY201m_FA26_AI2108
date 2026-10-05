@@ -1,0 +1,5 @@
+is_uas,is_recent_test,count_events,fatal_rate_pct
+0,False,45715,18.16
+0,True,11545,18.33
+1,False,107,23.36
+1,True,543,16.02

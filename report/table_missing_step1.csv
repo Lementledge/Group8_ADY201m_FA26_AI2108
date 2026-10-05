@@ -1,0 +1,4 @@
+table,column,missing_count,missing_pct
+flight_crew,pilot_tot_hrs,8009,13.83
+flight_crew,crew_age,5178,8.94
+events,inj_tot_f,2324,4.01

@@ -1,0 +1,37 @@
+﻿=== AI AUDIT LOG - METADATA & SUMMARY ===
+Student Name,Châu Chí Cường
+Student ID,SE180687
+Class,AI2108
+Group,Group 08
+Course,ADY201m
+Assignment,On-going Assessment 1 (Data Understanding & Problem Formulation)
+Project Topic,Robust Severity Prediction for Aviation and UAS Accidents from NTSB Records
+Total Prompts Used,42
+Core Prompts Logged,6
+Selection Ratio,14.3% (Compliant: 10-20%)
+Hallucinations Detected,3
+
+=== DETAILED AI AUDIT LOG (CORE PROMPTS & HUMAN DELTA) ===
+Entry #,Prompt Type,Stage / Component,Problem / Context,Prompt to AI,AI Response (Summary),Human Delta & Reflection (Critical Thinking / Contextualization / Creative Synthesis / Decision Ownership),Evidence
+001,DECISION,Data Profiling & Schema Architecture,"Ghép 4 bảng NTSB (events, aircraft, injury, crew) mà không làm nở số dòng do va chạm nhiều máy bay hoặc nhiều phi công.",Làm thế nào để JOIN 4 bảng NTSB qua khóa ev_id bằng DuckDB?,AI đề xuất lệnh INNER JOIN đơn giản nối trực tiếp 4 bảng theo khóa ev_id.,"Critical Thinking: JOIN đơn giản làm số dòng tăng vọt từ 57k lên 78k (bùng nổ cartesian do 1 vụ tai nạn có thể có 2 máy bay). Contextualization: Mỗi sự kiện chỉ được có đúng 1 dòng đại diện. Creative Synthesis: Tự viết CTE gom nhóm MAX(num_eng), FIRST(far_part), MAX(crew_age) theo ev_id. Decision Ownership: Dùng CTE gom nhóm để bảng hợp nhất feat giữ chuẩn 57,260 dòng.",report/table_q2_ac_agg.csv + code trong 03_sql_analysis.py
+002,PROBLEM-SOLVING,Data Cleaning & Target Formulation,Cột inj_tot_f có nhiều ô trống (NULL) trong cơ sở dữ liệu NTSB Access.,"Cột inj_tot_f bị thiếu giá trị, nên xử lý dropna hay fill 0 trong pandas?",AI gợi ý sử dụng df.dropna(subset=['inj_tot_f']) để đảm bảo nhãn sạch.,"Critical Thinking: ẢO GIÁC / SAI LỆCH LOGIC ĐƯỢC PHÁT HIỆN. Contextualization: Đối chiếu cẩm nang NTSB codman.pdf mục 4.2, ở tai nạn máy bay tư nhân đã đóng hồ sơ, ô trống đồng nghĩa là 0 nạn nhân tử vong, không phải khuyết dữ liệu. Creative Synthesis: Quy đổi NULL thành 0. Decision Ownership: Giữ lại hơn 6,000 dòng không tử vong, bảo toàn tỷ lệ nhãn tử vong cơ sở 18.2%.",Trích dẫn Mục 4.2 trong tài liệu NTSB codman.pdf
+003,VERIFICATION,Domain Shift Definition (UAS / Drone),Nhận diện phương tiện bay không người lái (UAS / drone) trong kho dữ liệu NTSB.,Cơ sở dữ liệu NTSB phân loại drone bằng mã nào trong cột acft_category?,AI khẳng định NTSB luôn dùng mã 'DRONE' trong cột acft_category từ năm 1990 đến nay.,Critical Thinking: ẢO GIÁC ĐƯỢC PHÁT HIỆN (Fabrication). Contextualization: Kiểm tra thực tế bằng SQL không hề có mã 'DRONE'. Creative Synthesis: NTSB chỉ bắt đầu dùng mã 'UAS' từ 2018; trước đó sự cố drone ghi nhận ở 'UNK' hoặc tên nhà sản xuất. Decision Ownership: Xây dựng bộ lọc regex kết hợp acft_category='UAS' và từ khóa hãng DJI/Autel.,Kết quả truy vấn SELECT DISTINCT acft_category FROM aircraft
+004,DECISION,Feature Selection & No Target Leakage,Lựa chọn các cột đặc trưng để dự báo mức độ nghiêm trọng mà không gây rò rỉ dữ liệu.,Liệt kê các đặc trưng quan trọng nhất trong bảng events để đưa vào mô hình học máy?,AI đề xuất đưa vào cả số xe cứu hỏa huy động và nguyên nhân điều tra kết luận.,"Critical Thinking: NGUY CƠ RÒ RỈ DỮ LIỆU NGHIÊM TRỌNG (Target Leakage). Contextualization: Số xe cứu hỏa và kết luận điều tra chỉ xuất hiện sau khi tai nạn kết thúc hàng tuần hoặc hàng năm. Creative Synthesis: Chỉ giữ lại các đặc trưng môi trường (thời tiết wx, ánh sáng), phương tiện và phi công quan sát được trước chuyến bay. Decision Ownership: Loại bỏ toàn bộ biến hậu kỳ khỏi X_cols.",Bảng danh mục đặc trưng trong report/table_features.csv
+005,PROBLEM-SOLVING,Conditional Missing Imputation,Cột tổng giờ bay của phi công (pilot_tot_hrs) bị khuyết 14.6%.,Nên điền khuyết giờ bay phi công bằng mean toàn bộ hay median?,AI đề xuất dùng df['pilot_tot_hrs'].fillna(df['pilot_tot_hrs'].mean()).,"Critical Thinking: Giờ bay phân phối lệch phải rất mạnh (skewed), mean sẽ bị kéo lệch bởi phi công 30,000h. Contextualization: Phi công thương mại Part 121 có giờ bay khác xa phi công tư nhân Part 91. Creative Synthesis: Dùng Conditional Median Imputation theo từng phân khúc far_part. Decision Ownership: Giữ vững tính đại diện của từng phân khúc bay.",Bảng phân phối giờ bay trong report/table_describe_raw.csv
+006,DECISION,Temporal Split Protocol,Cách chia tập huấn luyện và kiểm thử cho bài toán dữ liệu tai nạn hàng không.,Nên dùng train_test_split ngẫu nhiên của scikit-learn với test_size=0.2 không?,"AI gợi ý dùng train_test_split(test_size=0.2, random_state=42).","Critical Thinking: Chia ngẫu nhiên gây rò rỉ tương lai vào quá khứ. Contextualization: Mô hình triển khai thực tế phải dự báo tai nạn trong tương lai dựa trên dữ liệu quá khứ. Creative Synthesis: Chia theo mốc thời gian: Train (1990-2018) và Test (2019-2024), tách riêng drone làm tập đổi miền. Decision Ownership: Tuân thủ giao thức Temporal Split khoa học.",Tệp manifest.json ghi nhận cấu trúc chia tập
+
+=== HALLUCINATION DETECTION LOG ===
+Entry #,Hallucination Type,AI's Claim,Reality Check,How Detected,Corrective Action
+002,Data Imputation Bias,AI khuyên dropna(subset=['inj_tot_f']),"NULL ở NTSB đối với sự cố tư nhân đóng hồ sơ tương ứng 0 người tử vong, không phải thiếu dữ liệu",Đối chiếu cẩm nang NTSB codman.pdf mục 4.2,"Quy đổi NULL về 0, bảo toàn nguyên vẹn 57,260 dòng"
+003,Fabrication / Fact Error,AI khẳng định có mã 'DRONE' từ 1990,Mã 'DRONE' không tồn tại; mã 'UAS' chỉ xuất hiện từ 2018,Chạy SELECT DISTINCT acft_category trong DuckDB,Tự tạo bộ lọc regex kết hợp acft_category='UAS' và từ khóa hãng DJI/Autel
+001,Logic Error / Cartesian Explosion,AI đề xuất INNER JOIN trực tiếp 4 bảng,Làm số dòng tăng từ 57k lên 78k do va chạm nhiều máy bay / nhiều phi công,Kiểm tra COUNT(*) sau khi JOIN,Viết CTE dùng MAX()/FIRST() gom nhóm về từng ev_id duy nhất
+
+=== SELF-ASSESSMENT CHECKLIST ===
+#,Tiêu chí,Kết quả Đánh giá
+1,Prompt này ảnh hưởng đến quyết định quan trọng trong project?,PASS (100%)
+2,"Nếu không có prompt này, project có thay đổi về architecture/design?",PASS (100%)
+3,Tôi có thể giải thích lý do chọn/không chọn gợi ý của AI?,PASS (100%)
+4,"Có minh chứng cụ thể (code, metrics, comparison)?",PASS (100%)
+5,"Prompt này phản ánh tư duy phản biện, không chỉ copy AI?",PASS (100%)
+6,Số lượng entries nằm trong range (min-max)?,PASS (6 core prompts logged)
+7,Mỗi component có ít nhất 1 core prompt?,"PASS (Data Profiling, Cleaning, Domain, Features, Split)"

@@ -1,0 +1,11 @@
+# Python virtual environments & bytecode
+.venv/
+__pycache__/
+*.pyc
+
+# Temporary lock files
+~$*
+catboost_info/
+
+# Large local raw databases if not needed
+# data/raw/*.mdb

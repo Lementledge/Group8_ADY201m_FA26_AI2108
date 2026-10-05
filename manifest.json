@@ -1,0 +1,28 @@
+{
+  "dataset_name": "NTSB Clean Aviation & UAS Feature Dataset",
+  "file_name": "feat.parquet",
+  "sha256": "0be30d94ff15df3010e5b919f533981a3a771b013d2f1fa24d78e44ce30c72d2",
+  "total_rows": 57910,
+  "total_columns": 14,
+  "features": [
+    "ev_state",
+    "wx",
+    "light_cond",
+    "far_part",
+    "type_fly",
+    "flt_phase",
+    "num_eng",
+    "n_aircraft",
+    "age_max",
+    "hours_max"
+  ],
+  "target": "y",
+  "temporal_split": {
+    "train_manned_years": "1990-2018",
+    "train_manned_count": 45715,
+    "test_manned_years": "2019-2024",
+    "test_manned_count": 11545,
+    "uas_holdout_years": "2018-2024",
+    "uas_holdout_count": 650
+  }
+}
