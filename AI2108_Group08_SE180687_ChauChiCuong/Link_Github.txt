@@ -1,34 +1,33 @@
 ================================================================================
 ADY201m - ON-GOING ASSESSMENT 1: GITHUB REPOSITORY LINK & SUBMISSION MANIFEST
-Class: AI2108 | Group: 08 | Semester: Fall 2026
+Class: AI2108 | Group: Group 08 | Semester: Fall 2026
 Topic: Robust Severity Prediction for Aviation and UAS Accidents from NTSB Records
 ================================================================================
 
 1. GITHUB REPOSITORY LINK:
    URL: https://github.com/Lementledge/Group8_ADY201m_FA26_AI2108
    Branch: main
-   Latest Commit: Push full 7-step analytical pipeline and Assessment 1 reports
 
 2. STUDENT INFORMATION:
    Student Name: Châu Chí Cường
    Student ID:   SE180687
    Class:        AI2108
    Group:        Group 08
-   Role:         Data Understanding, Relational DuckDB Queries & Cleaning Pipeline
+   Role:         Data Understanding, Profiling, Relational DuckDB & Cleaning Pipeline
 
-3. REPOSITORY STRUCTURE:
-   01_data_understanding.py        -> Nạp 4 bảng NTSB, kiểm tra khóa ev_id, thống kê khuyết
-   02_data_cleaning.py             -> Làm sạch, gắn cờ is_uas, gán nhãn tử vong y
-   03_sql_analysis.py              -> 6 câu truy vấn quan hệ DuckDB giải quyết RQ1
-   04_feature_engineering_split.py -> Chia tập thời gian Train/Test/UAS, tạo feat.parquet
-   05_visualization.py             -> Xuất biểu đồ chuẩn công bố khoa học 300 DPI
-   06_modeling_evaluation.py       -> Huấn luyện 5 mô hình, hiệu chuẩn UAS Temperature Scaling
-   07_dashboard_app.py             -> Ứng dụng Web Dashboard tương tác (Streamlit)
-   run_all_steps.bat               -> Tệp thực thi tự động toàn bộ pipeline
+3. REPOSITORY STRUCTURE & CODE EXECUTION:
+   01_data_understanding.py       -> Nạp 4 bảng NTSB thô, kiểm tra khóa ev_id, thống kê khuyết
+   02_data_cleaning.py            -> Làm sạch dữ liệu, tách cờ drone is_uas, gán nhãn y
+   03_sql_analysis.py             -> 6 câu truy vấn quan hệ DuckDB giải quyết RQ1
+   04_feature_engineering_split.py-> Chia tập thời gian Train/Test/UAS, tạo feat.parquet
+   05_visualization.py            -> Xuất các biểu đồ chuẩn công bố khoa học 300 DPI
+   06_modeling_evaluation.py      -> Huấn luyện 5 mô hình, hiệu chuẩn UAS Temperature Scaling
+   07_dashboard_app.py            -> Ứng dụng Web Dashboard tương tác (Streamlit)
+   run_all_steps.bat              -> Tệp thực thi tự động toàn bộ pipeline
 
 4. INSTRUCTIONS TO REPRODUCE:
    git clone https://github.com/Lementledge/Group8_ADY201m_FA26_AI2108.git
    cd Group8_ADY201m_FA26_AI2108
-   pip install pandas numpy duckdb scikit-learn lightgbm xgboost catboost matplotlib seaborn streamlit
-   python 01_data_understanding.py
+   pip install -r requirements.txt
+   run_all_steps.bat
 ================================================================================
